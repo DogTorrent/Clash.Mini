@@ -5,6 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Dreamacro/clash/common/utils"
+	"github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/tunnel"
 	"github.com/MetaCubeX/Clash.Mini/log"
 )
@@ -59,7 +61,8 @@ func RefreshAllDelay(singleCallback func(name string, delay int16), doneCallback
 					}
 				}
 			}()
-			delay, err = proxy.URLTest(ctx, TestUrl)
+			expectedStatus, err := utils.NewIntRanges[uint16]("*")
+			delay, err = proxy.URLTest(ctx, TestUrl, expectedStatus, constant.OriginalHistory)
 			if ctx.Err() != nil {
 				timeout = true
 				log.Warnln("[Delay] Timeout: %s", proxy.Name())

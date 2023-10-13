@@ -3,17 +3,18 @@ package controller
 import (
 	"container/list"
 	"errors"
+	"os"
+	path "path/filepath"
+
 	"github.com/Dreamacro/clash/config"
 	"github.com/Dreamacro/clash/hub/executor"
 	"github.com/Dreamacro/clash/hub/route"
+	"github.com/Dreamacro/clash/log"
 	C "github.com/MetaCubeX/Clash.Mini/config"
 	"github.com/MetaCubeX/Clash.Mini/constant"
-	"github.com/MetaCubeX/Clash.Mini/log"
 	"github.com/MetaCubeX/Clash.Mini/mixin"
 	"github.com/MetaCubeX/Clash.Mini/util/file"
 	"gopkg.in/yaml.v3"
-	"os"
-	path "path/filepath"
 )
 
 // Option 配置文件前置处理
@@ -192,7 +193,8 @@ func (core *Core) ApplyConfig(isUpdate bool) error {
 
 		if cfg.General.ExternalController != "" {
 			constant.SetController(cfg.General.ExternalController, cfg.General.Secret)
-			go route.Start(cfg.General.ExternalController, cfg.General.Secret)
+			go route.Start(cfg.General.ExternalController, cfg.General.ExternalControllerTLS,
+				cfg.General.Secret, cfg.TLS.Certificate, cfg.TLS.PrivateKey, cfg.General.LogLevel == log.DEBUG)
 		}
 	}
 
